@@ -1,0 +1,10 @@
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\bin\Release\ResetSettings.exe.config
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\bin\Release\ResetSettings.exe
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\bin\Release\ResetSettings.pdb
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\obj\Release\ResetSettings.Form1.resources
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\obj\Release\ResetSettings.Properties.Resources.resources
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\obj\Release\ResetSettings.csproj.GenerateResource.cache
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\obj\Release\ResetSettings.csproj.CoreCompileInputs.cache
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\obj\Release\ResetSettings.exe
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\obj\Release\ResetSettings.pdb
+C:\Users\d.shcherbachenya\Desktop\projects\ResetSettings\obj\Release\ResetSettings.csprojAssemblyReference.cache
