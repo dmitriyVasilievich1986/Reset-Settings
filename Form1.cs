@@ -14,21 +14,83 @@ namespace ResetSettings
 {
     public partial class Form1 : Form
     {
-        SerialPort PortUSB = new SerialPort();
-        Dictionary<string, byte[]> MTU5 = new Dictionary<string, byte[]>()
+        private byte[] convert_to_byte(string text)
         {
-            { "mtu5 reset",new byte[]{ 0x55, 0xAA, 0x64, 0x26, 0x01, 0x53, 0x79, 0x73, 0x52, 0x65, 0x73, 0x65, 0x74, 0x4B, 0x66, 0x4F, 0x66, 0x66, 0x73, 0x65, 0x74, 0x3D, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x53 } },
-            { "mtu5 chanel b pt1",new byte[]{ 0x55 ,0xAA ,0x64 ,0x26 ,0x01 ,0x55 ,0x61 ,0x72 ,0x74 ,0x73 ,0x58 ,0x31 ,0x30 ,0x34 ,0x4F ,0x70 ,0x4D ,0x6F ,0x64 ,0x65 ,0x3D ,0x34 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,0x3C } },
-            { "mtu5 chanel b pt2",new byte[]{ 0x55 ,0xAA ,0xE4 ,0x26 ,01 ,0x55 ,0x61 ,0x72 ,0x74 ,0x73 ,0x58 ,0x31 ,0x30 ,0x34 ,0x4F ,0x70 ,0x4D ,0x6F ,0x64 ,0x65 ,0x3D ,0x30 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,00 ,0xB8 } },
-            { "mtu5 chanel a pt1",new byte[]{ 0x55 ,0xAA ,0x64 ,0x26 ,0x01, 0x55, 0x61, 0x72, 0x74, 0x73, 0x54, 0x62, 0x75, 0x73, 0x4F, 0x70, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xED} },
-            { "mtu5 chanel a pt2",new byte[]{ 0x55, 0xAA, 0xE4, 0x26, 0x01, 0x55, 0x61, 0x72, 0x74, 0x73, 0x54, 0x62, 0x75, 0x73, 0x4F, 0x70, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x69 } },
-            { "mtu5 kfa pt1",new byte[]{ 0x55, 0xAA, 0x64, 0x26, 0x01, 0x4B, 0x66, 0x41, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6F } } ,
-            { "mtu5 kfa pt2",new byte[]{ 0x55, 0xAA, 0x64, 0x26, 0x01, 0x4B, 0x66, 0x41, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6F } } ,
-            { "mtu5 kfb pt1",new byte[]{ 0x55, 0xAA, 0x64, 0x26, 0x01, 0x4B, 0x66, 0x42, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70 } } ,
-            { "mtu5 kfb pt2",new byte[]{ 0x55, 0xAA, 0xE4, 0x26, 0x01, 0x4B, 0x66, 0x42, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0 } } ,
-            { "mtu5 kfc pt1",new byte[]{ 0x55, 0xAA, 0x64, 0x26, 0x01, 0x4B, 0x66, 0x43, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x71 } } ,
-            { "mtu5 kfc pt2",new byte[]{ 0x55, 0xAA, 0xE4, 0x26, 0x01, 0x4B, 0x66, 0x43, 0x4D, 0x6F, 0x64, 0x65, 0x3D, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF1} } ,            
-            { "mtu5 set",new byte[]{ 0x55, 0xAA, 0x64, 0x26, 0x01, 0x53, 0x79, 0x73, 0x53, 0x65, 0x74, 0x4B, 0x66, 0x4F, 0x66, 0x66, 0x73, 0x65, 0x74, 0x3D, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7C } },
+            byte[] output = new byte[text.Split().Length];
+            for (int a = 0; a < text.Split().Length; a++) output[a] = Convert.ToByte(text.Split()[a], 16);
+            return output;
+        }
+
+        SerialPort PortUSB = new SerialPort();
+        Dictionary<string, string> PSC24V10A_Set = new Dictionary<string, string>()
+        {            
+            { "нагрев1", "55 AA 09 0A 01 00 00 F0 41 45"},
+            { "нагрев2", "55 AA 89 0A 01 00 00 00 00 94"},
+            { "вкл1", "55 AA 09 08 03 00 00 14"},
+            { "вкл2", "55 AA 89 08 03 00 00 94"},
+            { "T1 вкл1", "55 AA 09 08 02 01 00 14"},
+            { "T1 вкл2", "55 AA 89 08 02 00 00 93"},
+            { "датчик t1", "55 AA 0B 07 01 AA BD"},
+            { "датчик t2", "55 AA 8A 0E 01 00 00 00 00 00 00 00 00 99"}
+        };
+        Dictionary<string, string> PSC24V40A_Set = new Dictionary<string, string>()
+        {
+            { "ModBus1", "55 AA 01 07 08 01 11"},
+            { "ModBus2", "55 AA 01 07 04 01 0D"},
+            { "нагрев", "55 AA 0C 08 03 00 00 17"},
+            { "T1 вкл", "55 AA 0C 08 02 01 00 17"},
+            { "30C", "55 AA 0C 0A 01 00 00 F0 41 48"},
+            { "датчик t1", "55 AA 0E 07 01 AA C0"},
+            { "датчик t2", "55 AA 8D 0E 01 00 00 00 00 00 00 00 00 9C"}
+        };
+        Dictionary<string, string> RTU7_Set = new Dictionary<string, string>()
+        {            
+            { "Reset", "55 AA 13 07 01 00 1B"},
+            { "ModBus1", "55 AA 01 07 08 01 11"},
+            { "ModBus2", "55 AA 01 07 04 01 0D"},
+            { "AC1", "55 AA 14 08 01 00 00 1D"},
+            { "Set", "55 AA 13 07 02 00 1C"}
+        };
+        Dictionary<string, string> PM7E1DI8_Set = new Dictionary<string, string>()
+        {            
+            { "Din1 AC11", "55 AA 64 26 01 44 49 4E 31 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 6E"},
+            { "Din1 AC12", "55 AA E4 26 01 44 49 4E 31 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 EE"},
+            { "Din1 AC21", "55 AA 64 26 01 44 49 4E 32 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 6F"},
+            { "Din1 AC22", "55 AA E4 26 01 44 49 4E 32 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 EF"},
+            { "Din1 AC31", "55 AA 64 26 01 44 49 4E 33 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 70"},
+            { "Din1 AC32", "55 AA E4 26 01 44 49 4E 33 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F0"},
+            { "Din1 AC41", "55 AA 64 26 01 44 49 4E 34 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 71"},
+            { "Din1 AC42", "55 AA E4 26 01 44 49 4E 34 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F1"},
+            { "Din1 AC51", "55 AA 64 26 01 44 49 4E 35 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 72"},
+            { "Din1 AC52", "55 AA E4 26 01 44 49 4E 35 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F2"},
+            { "Din1 AC61", "55 AA 64 26 01 44 49 4E 36 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 73"},
+            { "Din1 AC62", "55 AA E4 26 01 44 49 4E 36 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F3"},
+            { "Din1 AC71", "55 AA 64 26 01 44 49 4E 37 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 74"},
+            { "Din1 AC72", "55 AA E4 26 01 44 49 4E 37 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F4"},
+            { "Din1 AC81", "55 AA 64 26 01 44 49 4E 38 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 75"},
+            { "Din1 AC82", "55 AA E4 26 01 44 49 4E 38 5F 41 43 44 43 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F5"},
+            { "Set Offset1", "55 AA B3 09 00 00 00 00 BC"},
+            { "Set Offset2", "55 AA 10 07 02 00 19"}
+        };
+        Dictionary<string, string> PSC24V10A_Reset = new Dictionary<string, string>()
+        {
+            { "нагрев1", "55 AA 09 0A 01 00 00 A0 41 F5"},
+            { "нагрев2", "55 AA 89 0A 01 00 00 00 00 94"}
+        };
+        Dictionary<string, string> MTU5_Set = new Dictionary<string, string>()
+        {
+            {"Reset", "55 AA 64 26 01 53 79 73 52 65 73 65 74 4B 66 4F 66 66 73 65 74 3D 31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 53" },
+            {"modbus1.1", "55 AA 64 26 01 55 61 72 74 73 58 31 30 34 4F 70 4D 6F 64 65 3D 34 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3C" },
+            {"modbus1.2", "55 AA E4 26 01 55 61 72 74 73 58 31 30 34 4F 70 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 B8" },
+            {"modbus2.1", "55 AA 64 26 01 55 61 72 74 73 54 62 75 73 4F 70 4D 6F 64 65 3D 34 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ED" },
+            {"modbus2.2", "55 AA E4 26 01 55 61 72 74 73 54 62 75 73 4F 70 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 69" },
+            {"AC1.1", "55 AA 64 26 01 4B 66 41 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 6F" },
+            {"AC1.2", "55 AA E4 26 01 4B 66 41 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 EF" },
+            {"AC2.1", "55 AA 64 26 01 4B 66 42 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 70" },
+            {"AC2.2", "55 AA E4 26 01 4B 66 42 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F0" },
+            {"AC3.1", "55 AA 64 26 01 4B 66 43 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 71" },
+            {"AC3.2", "55 AA E4 26 01 4B 66 43 4D 6F 64 65 3D 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F1" },
+            {"Set", "55 AA 64 26 01 53 79 73 53 65 74 4B 66 4F 66 66 73 65 74 3D 31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 7C" }
         };
 
         Dictionary<string, byte[]> DIN32 = new Dictionary<string, byte[]>()
@@ -117,8 +179,12 @@ namespace ResetSettings
             switch (comboBox1.Text)
             {
                 case "MTU5":
-                    foreach (byte[] a in MTU5.Values)
-                        { PortUSB.Write(a, 0, a.Length); Thread.Sleep(200); }
+                    foreach (string a in MTU5_Set.Values)
+                        { PortUSB.Write(convert_to_byte(a), 0, convert_to_byte(a).Length); Thread.Sleep(200); }
+                    break;
+                case "RTU7":
+                    foreach (string a in RTU7_Set.Values)
+                        { PortUSB.Write(convert_to_byte(a), 0, convert_to_byte(a).Length); Thread.Sleep(200); }
                     break;
                 case "DIN32":
                     foreach (byte[] a in DIN32.Values)
@@ -132,6 +198,20 @@ namespace ResetSettings
                     foreach (byte[] a in RTU5_Set.Values)
                     { PortUSB.Write(a, 0, a.Length); Thread.Sleep(200); }
                     break;
+                case "PSC24V10A":
+                    foreach (string a in PSC24V10A_Set.Values)
+                        { PortUSB.Write(convert_to_byte(a), 0, convert_to_byte(a).Length); Thread.Sleep(200); }
+                    break;
+                case "PSC24V40A":
+                    foreach (string a in PSC24V40A_Set.Values)
+                        { PortUSB.Write(convert_to_byte(a), 0, convert_to_byte(a).Length); Thread.Sleep(200); }
+                    break;
+                case "PM7 E1 DI8":
+                    foreach (string a in PM7E1DI8_Set.Values)
+                        { PortUSB.Write(convert_to_byte(a), 0, convert_to_byte(a).Length); Thread.Sleep(200); }
+                    break;
+
+
             }
             button1.Enabled = true;
             button2.Enabled = true;
@@ -144,7 +224,7 @@ namespace ResetSettings
                 try
                 {
                     PortUSB.PortName = "COM7";
-                    PortUSB.BaudRate = 2400;
+                    PortUSB.BaudRate = 115200;
                     PortUSB.Open();
                 }
                 catch (Exception err)
@@ -193,6 +273,10 @@ namespace ResetSettings
                 case "RTU5":
                     foreach (byte[] a in RTU5_Reset.Values)
                     { PortUSB.Write(a, 0, a.Length); Thread.Sleep(200); }
+                    break;
+                case "PSC24V10A":
+                    foreach (string a in PSC24V10A_Reset.Values)
+                    { PortUSB.Write(convert_to_byte(a), 0, convert_to_byte(a).Length); Thread.Sleep(200); }
                     break;
             }
             button1.Enabled = true;

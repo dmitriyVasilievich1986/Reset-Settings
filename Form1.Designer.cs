@@ -42,7 +42,11 @@
             "DIN32",
             "MTU3",
             "MTU5",
-            "RTU5"});
+            "RTU5",
+            "PSC24V10A",
+            "PM7 E1 DI8",
+            "RTU7",
+            "PSC24V40A"});
             this.comboBox1.Location = new System.Drawing.Point(38, 12);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
